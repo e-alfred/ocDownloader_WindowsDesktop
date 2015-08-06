@@ -107,6 +107,10 @@ namespace ocDownloader.Screens
                     this.BuildExistingConnectionsMenu(false, true);
 
                     this.DownloadsContainer.Children.Clear();
+
+                    this.CurrentConnection = NewConnectionForm.GetConnection;
+                    this.CurrentConnectionIndex = this.MyOCConnections.Count - 1;
+                    this.GetQueue();
                 }
             }
         }
