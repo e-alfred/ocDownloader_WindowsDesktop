@@ -11,20 +11,33 @@ namespace ocDownloader.Screens
     /// </summary>
     public partial class EnterPassword : Window
     {
+        private Boolean FormClosed = false;
         private Boolean CPasswordHasChanged = false;
         private String CUserPassword = null;
 
-        public EnterPassword(String Name)
+        public EnterPassword(Window Owner, String Name)
         {
             InitializeComponent();
 
+            this.Owner = Owner;
             this.LabelEnvironment.Text = String.Format("Please, enter your password to connect to the ownCloud environment {0} !", Name);
             this.ConnectionPassword.Focus();
         }
 
+        /// <summary>
+        /// Property : retrieve the password the user just enter
+        /// </summary>
         public String GetPassword
         {
             get { return this.CUserPassword; }
+        }
+
+        /// <summary>
+        /// Property : To know if the form has been closed or if the user clicked on the OK button
+        /// </summary>
+        public Boolean FormHasBeenClosed
+        {
+            get { return this.FormClosed; }
         }
 
         /// <summary>
@@ -34,6 +47,7 @@ namespace ocDownloader.Screens
         /// <param name="E"></param>
         private void EnterPasswordClose_Click(Object Sender, RoutedEventArgs E)
         {
+            this.FormClosed = true;
             this.Close();
         }
 
@@ -65,8 +79,20 @@ namespace ocDownloader.Screens
             else
             {
                 this.CPasswordHasChanged = false;
-                PB.Password = "Password";
-                PB.Foreground = Brushes.LightGray;
+            }
+        }
+
+        /// <summary>
+        /// Form password key down event
+        /// </summary>
+        /// <param name="Sender"></param>
+        /// <param name="E"></param>
+        private void FormPasswdBox_KeyDown(Object Sender, KeyEventArgs E)
+        {
+            if (E.Key == Key.Enter)
+            {
+                this.CUserPassword = this.ConnectionPassword.Password;
+                this.Close();
             }
         }
 
@@ -79,15 +105,6 @@ namespace ocDownloader.Screens
         {
             this.CUserPassword = this.ConnectionPassword.Password;
             this.Close();
-        }
-
-        private void ConnectionPassword_KeyDown(Object Sender, KeyEventArgs E)
-        {
-            if (E.Key == Key.Enter)
-            {
-                this.CUserPassword = this.ConnectionPassword.Password;
-                this.Close();
-            }
         }
     }
 }

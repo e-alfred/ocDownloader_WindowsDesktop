@@ -58,11 +58,13 @@ namespace ocDownloader.Screens
                 return;
             }
 
-            this.BuildExistingConnectionsMenu(true);
+            this.BuildExistingConnectionsMenu(true, false);
 
             this.CurrentConnection = this.MyOCConnections[this.CurrentConnectionIndex];
-            this.AskPassword();
-            this.GetQueue();
+            if (this.AskPassword())
+            {
+                this.GetQueue();
+            }
         }
 
         /// <summary>
@@ -81,8 +83,10 @@ namespace ocDownloader.Screens
                 this.DownloadsContainer.Children.Clear();
                 this.CurrentConnectionIndex = ConnectionIndex;
                 this.CurrentConnection = this.MyOCConnections[this.CurrentConnectionIndex];
-                this.AskPassword();
-                this.GetQueue();
+                if (this.AskPassword())
+                {
+                    this.GetQueue();
+                }
             }
         }
 
@@ -93,17 +97,16 @@ namespace ocDownloader.Screens
         /// <param name="E"></param>
         private void NewConnection_Click(Object Sender, RoutedEventArgs E)
         {
-            NewOCConnection NewConnectionForm = new NewOCConnection(this.UserProfile);
+            NewOCConnection NewConnectionForm = new NewOCConnection(this, this.UserProfile);
             if (NewConnectionForm.ShowDialog() == false)
             {
                 if (NewConnectionForm.GetUserPassword != null && NewConnectionForm.GetConnection != null)
                 {
                     NewConnectionForm.GetConnection.OCPassword = NewConnectionForm.GetUserPassword;
                     this.MyOCConnections.Add(NewConnectionForm.GetConnection);
-                    this.BuildExistingConnectionsMenu(false);
+                    this.BuildExistingConnectionsMenu(false, true);
 
                     this.DownloadsContainer.Children.Clear();
-
                 }
             }
         }
@@ -115,8 +118,11 @@ namespace ocDownloader.Screens
         /// <param name="E"></param>
         private void ManageConnections_Click(Object Sender, RoutedEventArgs E)
         {
-            ConnectionsManager CManager = new ConnectionsManager();
-            CManager.ShowDialog();
+            ConnectionsManager CManager = new ConnectionsManager(this, this.MyOCConnections);
+            if (CManager.ShowDialog() == false)
+            {
+                this.BuildExistingConnectionsMenu(false, false);
+            }
         }
 
         /// <summary>
@@ -186,8 +192,10 @@ namespace ocDownloader.Screens
         private void Refresh_Click(Object Sender, RoutedEventArgs E)
         {
             this.DownloadsContainer.Children.Clear();
-            this.AskPassword();
-            this.GetQueue();
+            if (this.AskPassword())
+            {
+                this.GetQueue();
+            }
         }
 
         /// <summary>
@@ -230,11 +238,20 @@ namespace ocDownloader.Screens
         }
 
         #region PrivateMethods
-        private void BuildExistingConnectionsMenu(Boolean AppJustLaunched)
+        private void BuildExistingConnectionsMenu(Boolean AppJustLaunched, Boolean ConnectionJustCreated)
         {
-            if (AppJustLaunched || this.MyOCConnections.Count == 1)
+            if (AppJustLaunched || (ConnectionJustCreated && this.MyOCConnections.Count == 1))
             {
                 this.TopMenuMain.Items.Insert(1, new MenuItem() { Name = "SavedConnectionsMenu", Header = "_Open Connection", Foreground = Brushes.White });
+
+                MenuItem MI = new MenuItem() { Name = "SavedConnectionsMenu", Header = "_Connections Manager", Foreground = Brushes.White };
+                MI.Click += ManageConnections_Click;
+                this.TopMenuMain.Items.Insert(2, MI);
+            }
+            else if (this.MyOCConnections.Count == 0)
+            {
+                this.TopMenuMain.Items.RemoveAt(1);
+                this.TopMenuMain.Items.RemoveAt(1);
             }
 
             MenuItem SavedConnectionsMenu = (MenuItem)this.TopMenuMain.Items[1];
@@ -248,13 +265,18 @@ namespace ocDownloader.Screens
             }
         }
 
-        private void AskPassword()
+        private Boolean AskPassword()
         {
             if (this.CurrentConnection.OCPassword == null)
             {
-                EnterPassword EnterPasswordWin = new EnterPassword(this.CurrentConnection.Name);
+                EnterPassword EnterPasswordWin = new EnterPassword(this, this.CurrentConnection.Name);
                 if (EnterPasswordWin.ShowDialog() == false)
                 {
+                    if (EnterPasswordWin.FormHasBeenClosed)
+                    {
+                        return false;
+                    }
+
                     this.CurrentConnection.OCPassword = null;
                     if (EnterPasswordWin.GetPassword != null && EnterPasswordWin.GetPassword.Trim().Length > 0)
                     {
@@ -262,6 +284,8 @@ namespace ocDownloader.Screens
                     }
                 }
             }
+
+            return true;
         }
 
         private async void GetQueue()
@@ -318,8 +342,10 @@ namespace ocDownloader.Screens
                 if (StatusCodeNumber == 401)
                 {
                     this.CurrentConnection.OCPassword = null;
-                    this.AskPassword();
-                    this.GetQueue();
+                    if (this.AskPassword())
+                    {
+                        this.GetQueue();
+                    }
                     return;
                 }
             }
@@ -352,7 +378,7 @@ namespace ocDownloader.Screens
             SPCanvas.Children.Add(new TextBlock()
             {
                 Style = Resources["DownloadSPTextBlockDetails"] as Style,
-                Text = (DL.PROGRESS.ProgressString == null ? DL.PROGRESS.Message : DL.PROGRESS.ProgressString) + (DL.ISTORRENT && DL.PROGRESSVAL < 100 ? " - Seeders:" + DL.PROGRESS.NumSeeders : (DL.ISTORRENT && DL.PROGRESSVAL == 100 ? " - Uploaded:" + DL.PROGRESS.UploadLength + " - Ratio:" + DL.PROGRESS.Ratio : ""))
+                Text = (DL.PROGRESS.ProgressString == null ? DL.PROGRESS.Message : DL.PROGRESS.ProgressString) + (DL.ISTORRENT && DL.PROGRESSVAL < 100 ? " - Seeders: " + DL.PROGRESS.NumSeeders : (DL.ISTORRENT && DL.PROGRESSVAL == 100 ? " - Uploaded: " + DL.PROGRESS.UploadLength + " - Ratio: " + DL.PROGRESS.Ratio : ""))
             });
             DownloadSP.Children.Add(SPCanvas);
             DownloadSP.Children.Add(new ProgressBar()

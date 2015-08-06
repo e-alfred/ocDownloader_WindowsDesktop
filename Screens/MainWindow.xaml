@@ -114,7 +114,7 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-        <Style TargetType="StackPanel" x:Name="DownlaodsContainer">
+        <Style x:Key="DownloadsContainer" TargetType="StackPanel">
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
             <Setter Property="VerticalAlignment" Value="Stretch"/>
             <Setter Property="Background" Value="#FF242425"/>
@@ -187,7 +187,6 @@
             <Menu Height="26" Margin="0,27,30,0" VerticalAlignment="top" Width="auto">
                 <MenuItem Name="TopMenuMain" Header="_MAIN" Height="25" Foreground="White" Padding="6,4,6,1">
                     <MenuItem Header="_New Connection" Foreground="White" Click="NewConnection_Click"/>
-                    <MenuItem Header="_Connections Manager" Foreground="White" Click="ManageConnections_Click"/>
                     <MenuItem Header="_Exit" Foreground="White" Click="Exit_Click"/>
                 </MenuItem>
                 <MenuItem Header="_DOWNLOADS" Height="25" Foreground="White" Padding="6,4,6,1">
@@ -219,8 +218,8 @@
             <Button Width="30" Height="20" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,5,75,0" Focusable="False" Click="MainMinimize_Click">
                 <Image Height="16" Width="16" VerticalAlignment="Top" Source="..\Images\minimize_white.png"/>
             </Button>
-            <ScrollViewer Margin="0,54,0,0" VerticalScrollBarVisibility="Auto">
-                <StackPanel x:Name="DownloadsContainer"/>
+            <ScrollViewer Margin="0,54,0,0" VerticalScrollBarVisibility="Auto" BorderThickness="0" BorderBrush="Transparent">
+                <StackPanel x:Name="DownloadsContainer" Style="{StaticResource DownloadsContainer}"/>
             </ScrollViewer>
         </Grid>
     </Border>

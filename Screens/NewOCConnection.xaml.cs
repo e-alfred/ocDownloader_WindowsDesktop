@@ -29,9 +29,11 @@ namespace ocDownloader.Screens
         /// New OCConnection constructor
         /// </summary>
         /// <param name="UserProfileInfo"></param>
-        public NewOCConnection(UserProfile UserProfileInfo)
+        public NewOCConnection(Window Owner, UserProfile UserProfileInfo)
         {
             InitializeComponent();
+
+            this.Owner = Owner;
             this.UserProfileInfo = UserProfileInfo;
         }
 

@@ -4,6 +4,7 @@ namespace ocDownloader.Models
 {
     public class OCConnection
     {
+        public String FileName { get; set; }
         public String Name { get; set; }
         public String OCUrl { get; set; }
         public String OCUsername { get; set; }

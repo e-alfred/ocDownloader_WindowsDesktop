@@ -29,12 +29,18 @@ namespace ocDownloader.Libs
         public void SaveConnection(OCConnection NewConnection)
         {
             XmlSerializer Writer = new XmlSerializer(typeof(OCConnection));
-            StreamWriter SaveFile = new StreamWriter(Path.Combine(this.AppDataFolder, (DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds.ToString() + ".occonnection"));
+            String FileName = (DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds.ToString() + ".occonnection";
+            StreamWriter SaveFile = new StreamWriter(Path.Combine(this.AppDataFolder, FileName));
 
+            NewConnection.FileName = FileName;
             Writer.Serialize(SaveFile, NewConnection);
             SaveFile.Close();
         }
 
+        /// <summary>
+        /// Get a list of all OCConnections files
+        /// </summary>
+        /// <returns></returns>
         public List<OCConnection> GetAllUserOCConnections()
         {
             XmlSerializer Reader = new XmlSerializer(typeof(OCConnection));
@@ -50,6 +56,26 @@ namespace ocDownloader.Libs
             }
 
             return OCConnections;
+        }
+
+        /// <summary>
+        /// Remove a specific OCConnection file
+        /// </summary>
+        /// <param name="OCConnection"></param>
+        /// <returns></returns>
+        public Boolean RemoveOCConnection(OCConnection OCConnection)
+        {
+            String FilePath = Path.Combine(this.AppDataFolder, OCConnection.FileName);
+            if (File.Exists(FilePath))
+            {
+                File.Delete(FilePath);
+                if (File.Exists(FilePath))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         /// <summary>
