@@ -44,3 +44,28 @@ E:\Works\Djazz-Univ.Net\Projects\ocDownloader_WindowsDesktop\obj\Debug\ocDownloa
 E:\Works\Djazz-Univ.Net\Projects\ocDownloader_WindowsDesktop\obj\Debug\ocDownloader.g.resources
 E:\Works\Djazz-Univ.Net\Projects\ocDownloader_WindowsDesktop\obj\Debug\ocDownloader.Properties.Resources.resources
 E:\Works\Djazz-Univ.Net\Projects\ocDownloader_WindowsDesktop\obj\Debug\ocDownloader.csproj.GenerateResource.Cache
+\\vmware-host\Shared Folders\Documents\Perso\Devs\Projects\ocDownloader_WindowsDesktop\bin\Debug\ocDownloader.exe.config
+\\vmware-host\Shared Folders\Documents\Perso\Devs\Projects\ocDownloader_WindowsDesktop\bin\Debug\ocDownloader.exe
+\\vmware-host\Shared Folders\Documents\Perso\Devs\Projects\ocDownloader_WindowsDesktop\bin\Debug\ocDownloader.pdb
+\\vmware-host\Shared Folders\Documents\Perso\Devs\Projects\ocDownloader_WindowsDesktop\bin\Debug\Newtonsoft.Json.dll
+\\vmware-host\Shared Folders\Documents\Perso\Devs\Projects\ocDownloader_WindowsDesktop\bin\Debug\WpfAnimatedGif.dll
+\\vmware-host\Shared Folders\Documents\Perso\Devs\Projects\ocDownloader_WindowsDesktop\bin\Debug\Newtonsoft.Json.xml
+\\vmware-host\Shared Folders\Documents\Perso\Devs\Projects\ocDownloader_WindowsDesktop\bin\Debug\WpfAnimatedGif.xml
+\\vmware-host\Shared Folders\Documents\Perso\Devs\Projects\ocDownloader_WindowsDesktop\obj\Debug\Screens\ConnectionsManager.baml
+\\vmware-host\Shared Folders\Documents\Perso\Devs\Projects\ocDownloader_WindowsDesktop\obj\Debug\Screens\EnterPassword.baml
+\\vmware-host\Shared Folders\Documents\Perso\Devs\Projects\ocDownloader_WindowsDesktop\obj\Debug\Screens\MainWindow.baml
+\\vmware-host\Shared Folders\Documents\Perso\Devs\Projects\ocDownloader_WindowsDesktop\obj\Debug\Screens\NewOCConnection.baml
+\\vmware-host\Shared Folders\Documents\Perso\Devs\Projects\ocDownloader_WindowsDesktop\obj\Debug\Screens\ConnectionsManager.g.cs
+\\vmware-host\Shared Folders\Documents\Perso\Devs\Projects\ocDownloader_WindowsDesktop\obj\Debug\Screens\EnterPassword.g.cs
+\\vmware-host\Shared Folders\Documents\Perso\Devs\Projects\ocDownloader_WindowsDesktop\obj\Debug\Screens\MainWindow.g.cs
+\\vmware-host\Shared Folders\Documents\Perso\Devs\Projects\ocDownloader_WindowsDesktop\obj\Debug\Screens\NewOCConnection.g.cs
+\\vmware-host\Shared Folders\Documents\Perso\Devs\Projects\ocDownloader_WindowsDesktop\obj\Debug\App.g.cs
+\\vmware-host\Shared Folders\Documents\Perso\Devs\Projects\ocDownloader_WindowsDesktop\obj\Debug\ocDownloader_MarkupCompile.cache
+\\vmware-host\Shared Folders\Documents\Perso\Devs\Projects\ocDownloader_WindowsDesktop\obj\Debug\ocDownloader.g.resources
+\\vmware-host\Shared Folders\Documents\Perso\Devs\Projects\ocDownloader_WindowsDesktop\obj\Debug\ocDownloader.Properties.Resources.resources
+\\vmware-host\Shared Folders\Documents\Perso\Devs\Projects\ocDownloader_WindowsDesktop\obj\Debug\ocDownloader.csproj.GenerateResource.Cache
+\\vmware-host\Shared Folders\Documents\Perso\Devs\Projects\ocDownloader_WindowsDesktop\obj\Debug\ocDownloader.exe
+\\vmware-host\Shared Folders\Documents\Perso\Devs\Projects\ocDownloader_WindowsDesktop\obj\Debug\ocDownloader.pdb
+\\vmware-host\Shared Folders\Documents\Perso\Devs\Projects\ocDownloader_WindowsDesktop\obj\Debug\ocDownloader.csprojResolveAssemblyReference.cache
+\\vmware-host\Shared Folders\Documents\Perso\Devs\Projects\ocDownloader_WindowsDesktop\obj\Debug\Screens\AddNewDownload.baml
+\\vmware-host\Shared Folders\Documents\Perso\Devs\Projects\ocDownloader_WindowsDesktop\obj\Debug\Screens\AddNewDownload.g.cs

@@ -26,8 +26,10 @@ namespace ocDownloader.Screens
     {
         private UserProfile UserProfile;
         private List<OCConnection> MyOCConnections;
+        private List<Download> DLQueue;
         private OCConnection CurrentConnection;
         private Int32 CurrentConnectionIndex = 0;
+        private Boolean IsConnectedToOC = false;
 
         /// <summary>
         /// Main window constructor
@@ -35,7 +37,6 @@ namespace ocDownloader.Screens
         public MainWindow()
         {
             InitializeComponent();
-            this.SourceInitialized += new EventHandler(Window_SourceInitialized);
 
             this.UserProfile = new UserProfile();
             this.UserProfile.PrepareAppDataFolder();
@@ -78,7 +79,7 @@ namespace ocDownloader.Screens
             String[] Name = ClickedMI.Name.Split('_');
             Int32 ConnectionIndex = Convert.ToInt32(Name[1]);
 
-            if (this.CurrentConnectionIndex != ConnectionIndex)
+            if (this.CurrentConnectionIndex != ConnectionIndex || (this.CurrentConnectionIndex == ConnectionIndex && !this.IsConnectedToOC))
             {
                 this.DownloadsContainer.Children.Clear();
                 this.CurrentConnectionIndex = ConnectionIndex;
@@ -130,6 +131,30 @@ namespace ocDownloader.Screens
         }
 
         /// <summary>
+        /// New download click event
+        /// </summary>
+        /// <param name="Sender"></param>
+        /// <param name="E"></param>
+        private void NewDownload_Click(Object Sender, RoutedEventArgs E)
+        {
+            if (!this.IsConnectedToOC)
+            {
+                if (this.AskPassword())
+                {
+                    this.GetQueue();
+                }
+            }
+            else
+            {
+                AddNewDownload NewDLWin = new AddNewDownload();
+                if (NewDLWin.ShowDialog() == false)
+                {
+
+                }
+            }
+        }
+
+        /// <summary>
         /// Exit menu item event
         /// </summary>
         /// <param name="Sender"></param>
@@ -170,25 +195,6 @@ namespace ocDownloader.Screens
         }
 
         /// <summary>
-        /// Application title label mouse double click event
-        /// </summary>
-        /// <param name="Sender"></param>
-        /// <param name="E"></param>
-        private void ApplicationTitle_MouseDoubleClick(Object Sender, MouseButtonEventArgs E)
-        {
-            if (this.WindowState == WindowState.Normal)
-            {
-                this.MainWindowBorder.BorderThickness = new Thickness(0);
-                this.WindowState = WindowState.Maximized;
-            }
-            else
-            {
-                this.MainWindowBorder.BorderThickness = new Thickness(3);
-                this.WindowState = WindowState.Normal;
-            }
-        }
-        
-        /// <summary>
         /// Refresh top menu item click event
         /// </summary>
         /// <param name="Sender"></param>
@@ -212,43 +218,14 @@ namespace ocDownloader.Screens
             Application.Current.Shutdown();
         }
 
-        /// <summary>
-        /// Main maximize button click event
-        /// </summary>
-        /// <param name="Sender"></param>
-        /// <param name="E"></param>
-        private void MainMaximize_Click(Object Sender, RoutedEventArgs E)
-        {
-            if (this.WindowState == WindowState.Normal)
-            {
-                this.MainWindowBorder.BorderThickness = new Thickness(0);
-                this.WindowState = WindowState.Maximized;
-            }
-            else
-            {
-                this.MainWindowBorder.BorderThickness = new Thickness(3);
-                this.WindowState = WindowState.Normal;
-            }
-        }
-
-        /// <summary>
-        /// Main minimize button click event
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="E"></param>
-        private void MainMinimize_Click(Object sender, RoutedEventArgs E)
-        {
-            this.WindowState = WindowState.Minimized;
-        }
-
         #region PrivateMethods
         private void BuildExistingConnectionsMenu(Boolean AppJustLaunched, Boolean ConnectionJustCreated)
         {
             if (AppJustLaunched || (ConnectionJustCreated && this.MyOCConnections.Count == 1))
             {
-                this.TopMenuMain.Items.Insert(1, new MenuItem() { Name = "SavedConnectionsMenu", Header = "_Open Connection", Foreground = Brushes.White });
+                this.TopMenuMain.Items.Insert(1, new MenuItem() { Name = "SavedConnectionsMenu", Header = "_Open Connection" });
 
-                MenuItem MI = new MenuItem() { Name = "SavedConnectionsMenu", Header = "_Connections Manager", Foreground = Brushes.White };
+                MenuItem MI = new MenuItem() { Name = "SavedConnectionsMenu", Header = "_Connections Manager" };
                 MI.Click += ManageConnections_Click;
                 this.TopMenuMain.Items.Insert(2, MI);
             }
@@ -262,7 +239,7 @@ namespace ocDownloader.Screens
             SavedConnectionsMenu.Items.Clear();
             for (Int32 Index = 0; Index < this.MyOCConnections.Count; Index++)
             {
-                MenuItem SavedConnection = new MenuItem() { Name = "SavedConnection_" + Index, Header = "_" + this.MyOCConnections[Index].Name, Foreground = Brushes.White };
+                MenuItem SavedConnection = new MenuItem() { Name = "SavedConnection_" + Index, Header = "_" + this.MyOCConnections[Index].Name };
                 SavedConnection.Click += SavedConnection_Click;
 
                 SavedConnectionsMenu.Items.Insert(Index, SavedConnection);
@@ -294,6 +271,8 @@ namespace ocDownloader.Screens
 
         private async void GetQueue()
         {
+            this.Title = "OCDOWNLOADER - " + this.CurrentConnection.Name;
+
             this.MainLoader.Opacity = 1;
             Int32 StatusCodeNumber = 0;
 
@@ -330,9 +309,17 @@ namespace ocDownloader.Screens
                 }
                 else
                 {
+                    this.IsConnectedToOC = true;
+                    this.DLQueue = new List<Download>();
                     if (Response.ocs.data.COUNTER.ALL > 0)
                     {
                         foreach (Download DL in Response.ocs.data.QUEUE)
+                        {
+                            this.DLQueue.Add(DL);
+                        }
+
+                        this.DLQueue.Reverse();
+                        foreach (Download DL in this.DLQueue)
                         {
                             this.CreateDownloadStackPanel(DL);
                         }
@@ -389,7 +376,8 @@ namespace ocDownloader.Screens
             {
                 Style = Resources["DownloadSPProgressBar"] as Style,
                 Minimum = 0,
-                Maximum = 100
+                Maximum = 100,
+                Value = DL.PROGRESSVAL
             });
             this.DownloadsContainer.Children.Add(DownloadSP);
             this.DownloadsContainer.Children.Add(new Line()
@@ -397,208 +385,6 @@ namespace ocDownloader.Screens
                 Style = Resources["DownloadSPSeparator"] as Style
             });
         }
-        #endregion
-
-        #region MaximizeHack
-        private void Window_SourceInitialized(Object Sender, EventArgs E)
-        {
-            System.IntPtr handle = (new WinInterop.WindowInteropHelper(this)).Handle;
-            WinInterop.HwndSource.FromHwnd(handle).AddHook(new WinInterop.HwndSourceHook(WindowProc));
-        }
-
-        private static System.IntPtr WindowProc(System.IntPtr hwnd, int msg, System.IntPtr wParam, System.IntPtr lParam, ref bool handled)
-        {
-            switch (msg)
-            {
-                case 0x0024:
-                    WmGetMinMaxInfo(hwnd, lParam);
-                    handled = true;
-                    break;
-            }
-
-            return (System.IntPtr)0;
-        }
-
-        private static void WmGetMinMaxInfo(System.IntPtr hwnd, System.IntPtr lParam)
-        {
-
-            MINMAXINFO mmi = (MINMAXINFO)Marshal.PtrToStructure(lParam, typeof(MINMAXINFO));
-
-            // Adjust the maximized size and position to fit the work area of the correct monitor
-            int MONITOR_DEFAULTTONEAREST = 0x00000002;
-            System.IntPtr monitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
-
-            if (monitor != System.IntPtr.Zero)
-            {
-                MONITORINFO monitorInfo = new MONITORINFO();
-                GetMonitorInfo(monitor, monitorInfo);
-                RECT rcWorkArea = monitorInfo.rcWork;
-                RECT rcMonitorArea = monitorInfo.rcMonitor;
-                mmi.ptMaxPosition.x = Math.Abs(rcWorkArea.left - rcMonitorArea.left);
-                mmi.ptMaxPosition.y = Math.Abs(rcWorkArea.top - rcMonitorArea.top);
-                mmi.ptMaxSize.x = Math.Abs(rcWorkArea.right - rcWorkArea.left);
-                mmi.ptMaxSize.y = Math.Abs(rcWorkArea.bottom - rcWorkArea.top);
-            }
-
-            Marshal.StructureToPtr(mmi, lParam, true);
-        }
-
-
-        /// <summary>
-        /// POINT aka POINTAPI
-        /// </summary>
-        [StructLayout(LayoutKind.Sequential)]
-        public struct POINT
-        {
-            /// <summary>
-            /// x coordinate of point.
-            /// </summary>
-            public int x;
-            /// <summary>
-            /// y coordinate of point.
-            /// </summary>
-            public int y;
-
-            /// <summary>
-            /// Construct a point of coordinates (x,y).
-            /// </summary>
-            public POINT(int x, int y)
-            {
-                this.x = x;
-                this.y = y;
-            }
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct MINMAXINFO
-        {
-            public POINT ptReserved;
-            public POINT ptMaxSize;
-            public POINT ptMaxPosition;
-            public POINT ptMinTrackSize;
-            public POINT ptMaxTrackSize;
-        };
-
-        /// <summary>
-        /// </summary>
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-        public class MONITORINFO
-        {
-            /// <summary>
-            /// </summary>            
-            public int cbSize = Marshal.SizeOf(typeof(MONITORINFO));
-
-            /// <summary>
-            /// </summary>            
-            public RECT rcMonitor = new RECT();
-
-            /// <summary>
-            /// </summary>            
-            public RECT rcWork = new RECT();
-
-            /// <summary>
-            /// </summary>            
-            public int dwFlags = 0;
-        }
-
-
-        /// <summary> Win32 </summary>
-        [StructLayout(LayoutKind.Sequential, Pack = 0)]
-        public struct RECT
-        {
-            /// <summary> Win32 </summary>
-            public int left;
-            /// <summary> Win32 </summary>
-            public int top;
-            /// <summary> Win32 </summary>
-            public int right;
-            /// <summary> Win32 </summary>
-            public int bottom;
-
-            /// <summary> Win32 </summary>
-            public static readonly RECT Empty = new RECT();
-
-            /// <summary> Win32 </summary>
-            public int Width
-            {
-                get { return Math.Abs(right - left); }  // Abs needed for BIDI OS
-            }
-            /// <summary> Win32 </summary>
-            public int Height
-            {
-                get { return bottom - top; }
-            }
-
-            /// <summary> Win32 </summary>
-            public RECT(int left, int top, int right, int bottom)
-            {
-                this.left = left;
-                this.top = top;
-                this.right = right;
-                this.bottom = bottom;
-            }
-
-
-            /// <summary> Win32 </summary>
-            public RECT(RECT rcSrc)
-            {
-                this.left = rcSrc.left;
-                this.top = rcSrc.top;
-                this.right = rcSrc.right;
-                this.bottom = rcSrc.bottom;
-            }
-
-            /// <summary> Win32 </summary>
-            public bool IsEmpty
-            {
-                get
-                {
-                    // BUGBUG : On Bidi OS (hebrew arabic) left > right
-                    return left >= right || top >= bottom;
-                }
-            }
-            /// <summary> Return a user friendly representation of this struct </summary>
-            public override string ToString()
-            {
-                if (this == RECT.Empty) { return "RECT {Empty}"; }
-                return "RECT { left : " + left + " / top : " + top + " / right : " + right + " / bottom : " + bottom + " }";
-            }
-
-            /// <summary> Determine if 2 RECT are equal (deep compare) </summary>
-            public override bool Equals(object obj)
-            {
-                if (!(obj is Rect)) { return false; }
-                return (this == (RECT)obj);
-            }
-
-            /// <summary>Return the HashCode for this struct (not garanteed to be unique)</summary>
-            public override int GetHashCode()
-            {
-                return left.GetHashCode() + top.GetHashCode() + right.GetHashCode() + bottom.GetHashCode();
-            }
-
-
-            /// <summary> Determine if 2 RECT are equal (deep compare)</summary>
-            public static bool operator ==(RECT rect1, RECT rect2)
-            {
-                return (rect1.left == rect2.left && rect1.top == rect2.top && rect1.right == rect2.right && rect1.bottom == rect2.bottom);
-            }
-
-            /// <summary> Determine if 2 RECT are different(deep compare)</summary>
-            public static bool operator !=(RECT rect1, RECT rect2)
-            {
-                return !(rect1 == rect2);
-            }
-        }
-
-        [DllImport("user32")]
-        internal static extern bool GetMonitorInfo(IntPtr hMonitor, MONITORINFO lpmi);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [DllImport("User32")]
-        internal static extern IntPtr MonitorFromWindow(IntPtr handle, int flags);
         #endregion
     }
 }

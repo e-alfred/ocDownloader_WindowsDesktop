@@ -49,7 +49,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Images\ocdownloader.ico</ApplicationIcon>
+    <ApplicationIcon>Images\ocdownloader_white.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json">
@@ -78,9 +78,13 @@
     <Compile Include="Libs\APICalls.cs" />
     <Compile Include="Libs\Tools.cs" />
     <Compile Include="Models\APIResponses\APIGeneral.cs" />
+    <Compile Include="Models\APIResponses\Download.cs" />
     <Compile Include="Models\APIResponses\QueueResponse.cs" />
     <Compile Include="Models\APIResponses\VersionResponse.cs" />
     <Compile Include="Models\HttpStatusCode.cs" />
+    <Compile Include="Screens\AddNewDownload.xaml.cs">
+      <DependentUpon>AddNewDownload.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Screens\ConnectionsManager.xaml.cs">
       <DependentUpon>ConnectionsManager.xaml</DependentUpon>
     </Compile>
@@ -90,6 +94,10 @@
     <Compile Include="Screens\NewOCConnection.xaml.cs">
       <DependentUpon>NewOCConnection.xaml</DependentUpon>
     </Compile>
+    <Page Include="Screens\AddNewDownload.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Screens\ConnectionsManager.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -202,6 +210,18 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\TopMenu\refresh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\trash32_black.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\ocdownloader_white.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\bt_file.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\add.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

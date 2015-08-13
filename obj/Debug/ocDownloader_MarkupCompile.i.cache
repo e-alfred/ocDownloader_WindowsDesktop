@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-E:\Works\Djazz-Univ.Net\Projects\ocDownloader_WindowsDesktop\obj\Debug\
+\\vmware-host\Shared Folders\Documents\Perso\Devs\Projects\ocDownloader_WindowsDesktop\obj\Debug\
 ocDownloader
 none
 false
 DEBUG;TRACE
-E:\Works\Djazz-Univ.Net\Projects\ocDownloader_WindowsDesktop\App.xaml
-41072367119
+\\vmware-host\Shared Folders\Documents\Perso\Devs\Projects\ocDownloader_WindowsDesktop\App.xaml
+5-2063124273
 
-20-1634742261
-15988541968
-Screens\ConnectionsManager.xaml;Screens\EnterPassword.xaml;Screens\MainWindow.xaml;Screens\NewOCConnection.xaml;
+221049492640
+141463997351
+Screens\AddNewDownload.xaml;Screens\ConnectionsManager.xaml;Screens\EnterPassword.xaml;Screens\MainWindow.xaml;Screens\NewOCConnection.xaml;
 
 False
 
