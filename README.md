@@ -1,5 +1,5 @@
 # ocDownloader desktop client for Windows
-Windows 10 desktop client for ocDownloader (Nextcloud application)
+Windows desktop client for ocDownloader (Nextcloud application)
 
 To install this Windows application, download the ocdownloader-bin.zip file from here: https://github.com/e-alfred/ocDownloader_WindowsDesktop/releases
 
